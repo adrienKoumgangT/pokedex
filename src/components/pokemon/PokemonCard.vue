@@ -29,6 +29,7 @@ export default {
   padding: 10px;
   margin: 10px;
   width: 200px;
+  height: 260px;
   display: inline-block;
 }
 
