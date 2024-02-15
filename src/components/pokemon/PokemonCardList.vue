@@ -2,8 +2,25 @@
 <template>
   <div>
     <h2>Pokémon List</h2>
+    <div class="filters">
+      <label>
+        Name:
+        <input v-model="nameFilter" @input="applyFilters" />
+      </label>
+      <label>
+        Classification:
+        <input v-model="classificationFilter" @input="applyFilters" />
+      </label>
+      <label>
+        Type:
+        <select v-model="typeFilter" @change="applyFilters">
+          <option value="">All</option>
+          <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
+        </select>
+      </label>
+    </div>
     <div class="card-container">
-      <div v-for="pokemon in paginatedPokemons" :key="pokemon.pokedex_number" class="card">
+      <div v-for="pokemon in filteredPokemons" :key="pokemon.pokedex_number" class="card">
         <pokemon-card :pokemon="pokemon"></pokemon-card>
       </div>
     </div>
@@ -27,8 +44,11 @@ export default {
   data() {
     return {
       pokemons: data, // Replace with your data
-      itemsPerPage: 9,
-      currentPage: 1
+      itemsPerPage: 6,
+      currentPage: 1,
+      nameFilter: '',
+      classificationFilter: '',
+      typeFilter: ''
     };
   },
   computed: {
@@ -39,6 +59,33 @@ export default {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       return this.pokemons.slice(start, end);
+    },
+    uniqueTypes() {
+      const types = new Set();
+      this.pokemons.forEach(pokemon => {
+        if (pokemon.type1) types.add(pokemon.type1);
+        if (pokemon.type2) types.add(pokemon.type2);
+      });
+      return Array.from(types);
+    },
+    filteredPokemons() {
+      let filteredList = this.pokemons;
+
+      if (this.nameFilter) {
+        const lowerCaseNameFilter = this.nameFilter.toLowerCase();
+        filteredList = filteredList.filter(pokemon => pokemon.name.toLowerCase().includes(lowerCaseNameFilter));
+      }
+
+      if (this.classificationFilter) {
+        const lowerCaseClassFilter = this.classificationFilter.toLowerCase();
+        filteredList = filteredList.filter(pokemon => pokemon.classfication.toLowerCase().includes(lowerCaseClassFilter));
+      }
+
+      if (this.typeFilter) {
+        filteredList = filteredList.filter(pokemon => pokemon.type1 === this.typeFilter || pokemon.type2 === this.typeFilter);
+      }
+
+      return filteredList.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
     }
   },
   methods: {
@@ -51,12 +98,20 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+    applyFilters() {
+      // Triggered when filter values change
+      // This method updates the filteredPokemons computed property
     }
   }
 };
 </script>
 
 <style scoped>
+.filters {
+  margin-bottom: 20px;
+}
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
