@@ -1,6 +1,6 @@
 <!-- PokemonCard.vue -->
 <template>
-  <div class="card">
+  <div class="card" @click="openDetailsModal">
     <h2>{{ pokemon.name }}</h2>
     <img :src="getImagePath(pokemon.name)" :alt="pokemon.name + ' Image'" />
     <p>Classification: {{ pokemon.classfication }}</p>
@@ -18,6 +18,10 @@ export default {
     getImagePath(pokemonName) {
       // Assuming your images are stored in the 'public/images/' folder
       return 'images/' + pokemonName.toLowerCase() + '.png';
+    },
+    openDetailsModal() {
+      console.log("openDetailsModal");
+      this.$emit('show-details', this.pokemon);
     }
   }
 };
@@ -28,9 +32,10 @@ export default {
   border: 1px solid #ccc;
   padding: 10px;
   margin: 10px;
-  width: 200px;
+  width: 250px;
   height: 260px;
   display: inline-block;
+  cursor: pointer;
 }
 
 img {

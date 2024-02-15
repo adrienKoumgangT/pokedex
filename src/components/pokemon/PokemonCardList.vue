@@ -21,24 +21,30 @@
     </div>
     <div class="card-container">
       <div v-for="pokemon in filteredPokemons" :key="pokemon.pokedex_number" class="card">
-        <pokemon-card :pokemon="pokemon"></pokemon-card>
+        <pokemon-card :pokemon="pokemon" @show-details="showDetailsModal"></pokemon-card>
       </div>
     </div>
+
     <div>
       <button @click="prevPage" :disabled="currentPage === 1">Previous Page</button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages">Next Page</button>
     </div>
+
+    <!-- Pokemon details modal -->
+    <pokemon-details-modal v-if="isModalVisible" :selected-pokemon="selectedPokemon" @close="closeDetailsModal"></pokemon-details-modal>
   </div>
 </template>
 
 <script>
 import PokemonCard from './PokemonCard.vue';
 import data from '../../assets/data/pokemon.json';
+import PokemonDetailsModal from "./PokemonDetailsModal.vue";
 
 
 export default {
   components: {
+    PokemonDetailsModal,
     PokemonCard
   },
   data() {
@@ -48,7 +54,9 @@ export default {
       currentPage: 1,
       nameFilter: '',
       classificationFilter: '',
-      typeFilter: ''
+      typeFilter: '',
+      isModalVisible: false,
+      selectedPokemon: null
     };
   },
   computed: {
@@ -102,6 +110,15 @@ export default {
     applyFilters() {
       // Triggered when filter values change
       // This method updates the filteredPokemons computed property
+    },
+    showDetailsModal(pokemon) {
+      console.log('showDetailsModal called');
+      this.selectedPokemon = pokemon;
+      this.isModalVisible = true;
+    },
+    closeDetailsModal() {
+      console.log('closeDetailsModal called');
+      this.isModalVisible = false;
     }
   }
 };
