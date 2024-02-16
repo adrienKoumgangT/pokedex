@@ -21,7 +21,7 @@
     </div>
     <div class="card-container">
       <div v-for="pokemon in filteredPokemons" :key="pokemon.pokedex_number" class="card">
-        <pokemon-card :pokemon="pokemon" @show-details="showDetailsModal"></pokemon-card>
+        <pokemon-card :pokemon="pokemon" @add-to-deck="addToDeck" @remove-from-deck="removeFromDeck" @show-details="showDetailsModal"></pokemon-card>
       </div>
     </div>
 
@@ -32,7 +32,12 @@
     </div>
 
     <!-- Pokemon details modal -->
-    <pokemon-details-modal v-if="isModalVisible" :selected-pokemon="selectedPokemon" @close="closeDetailsModal"></pokemon-details-modal>
+    <pokemon-details-modal v-if="isModalVisible" :selected-pokemon="selectedPokemon" :deck-pokemons="selectedPokemons" @close="closeDetailsModal" @add-to-deck="addToDeck" @remove-from-deck="removeFromDeck"></pokemon-details-modal>
+
+    <!-- Button to navigate to My Deck -->
+    <router-link to="/my-deck">
+      <button>Go to My Deck</button>
+    </router-link>
   </div>
 </template>
 
@@ -56,7 +61,8 @@ export default {
       classificationFilter: '',
       typeFilter: '',
       isModalVisible: false,
-      selectedPokemon: null
+      selectedPokemon: null,
+      selectedPokemons: []  // New array to store selected Pokémon
     };
   },
   computed: {
@@ -119,6 +125,20 @@ export default {
     closeDetailsModal() {
       console.log('closeDetailsModal called');
       this.isModalVisible = false;
+    },
+    addToDeck(pokemon) {
+      // Add the selected Pokemon to the deck
+      this.selectedPokemons.push(pokemon);
+    },
+    removeFromDeck(pokemon) {
+      // Remove the selected Pokemon from the deck
+      const index = this.selectedPokemons.indexOf(pokemon);
+      if (index !== -1) {
+        this.selectedPokemons.splice(index, 1);
+      }
+    },
+    viewDeck() {
+      this.$router.push({ name: 'my-deck' });
     }
   }
 };

@@ -9,19 +9,39 @@
       <p>Type: {{ selectedPokemon.type1 }}{{ selectedPokemon.type2 ? ' / ' + selectedPokemon.type2 : '' }}</p>
       <p>Abilities: {{ selectedPokemon.abilities }}</p>
       <!-- Add more details as needed -->
+      <p>HP: {{selectedPokemon.hp}}</p>
       <p>Attack: {{selectedPokemon.attack}}</p>
       <p>SP Attack : {{selectedPokemon.sp_attack}}</p>
       <p>Defense: {{selectedPokemon.defense}}</p>
       <p>SP Defense: {{selectedPokemon.sp_defense}}</p>
       <p>Speed: {{selectedPokemon.speed}}</p>
     </div>
+
+    <!-- Add to Deck and Remove from Deck buttons -->
+    <div class="deck-actions">
+      <button @click="addToDeck" :disabled="isInDeck || isDeckFull">Add to My Deck</button>
+      <button @click="removeFromDeck" :disabled="!isInDeck">Remove from My Deck</button>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
   props: {
-    selectedPokemon: Object
+    selectedPokemon: Object,
+  },
+  computed: {
+    ...mapState(['deckPokemons']),
+    isInDeck() {
+      // Check if the selected Pokemon is already in the deck
+      return this.deckPokemons.some(pokemon => pokemon.pokedex_number === this.selectedPokemon.pokedex_number);
+    },
+    isDeckFull() {
+      // Check if the deck is full (limit set to 5 in this example)
+      return this.deckPokemons.length >= 5;
+    },
   },
   methods: {
     getImagePath(pokemonName) {
@@ -31,7 +51,21 @@ export default {
     closeModal() {
       console.log('Closing modal');
       this.$emit('close');
-    }
+    },
+    ...mapMutations(['addToDeck', 'removeFromDeck']),
+    addToDeck() {
+      if (!this.isInDeck && !this.isDeckFull) {
+        // Commit the addToDeck mutation from Vuex store
+        console.log('adding to deck')
+        this.$store.commit('addToDeck', this.selectedPokemon);
+      }
+    },
+    removeFromDeck() {
+      if (this.isInDeck) {
+        console.log('removing from deck')
+        this.$store.commit('removeFromDeck', this.selectedPokemon);
+      }
+    },
   }
 };
 </script>
@@ -70,6 +104,19 @@ export default {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+img:hover {
+  transform: scale(1.5);
+}
+
+/* Additional styles for deck actions */
+.deck-actions {
+  margin-top: 20px;
+}
+
+.deck-actions button {
+  margin-right: 10px;
 }
 
 </style>

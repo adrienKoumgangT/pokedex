@@ -42,4 +42,9 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+img:hover {
+  transform: scale(1.5);
+}
+
 </style>
