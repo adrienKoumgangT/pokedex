@@ -7,11 +7,13 @@ import PokemonCardList from "@/components/pokemon/PokemonCardList.vue";
 import { createRouter, createWebHistory } from 'vue-router';
 import MyDeck from "@/components/deck/MyDeck.vue";
 import store from "@/store/index.js";
+import Arena from "@/components/arena/Arena.vue";
 
 const routes = [
     { path: '/', name: 'main', component: WelcomePage},
     { path: '/pokemon-list', name: 'pokemon-list', component: PokemonCardList },
     { path: '/my-deck', name: 'my-deck', component: MyDeck },
+    { path: '/arena', name: 'arena', component: Arena },
 ];
 
 const router = createRouter({

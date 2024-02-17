@@ -18,7 +18,16 @@
         @close="closeDetailsModal"
     ></pokemon-details-modal>
 
-    <router-link to="/pokemon-list">View Pokémon List</router-link>
+    <!-- Button to go to the Arena -->
+    <div class="button-arena">
+      <router-link to="/arena">
+        <button :disabled="isDeckEmpty">Go to Arena</button>
+      </router-link>
+    </div>
+
+    <div class="button-pokemon-list">
+      <router-link to="/pokemon-list">View Pokémon List</router-link>
+    </div>
   </div>
 
 </template>
@@ -37,6 +46,9 @@ export default {
   },
   computed: {
     ...mapState(['deckPokemons']),
+    isDeckEmpty() {
+      return this.deckPokemons.length === 0;
+    },
   },
   data() {
     return {
@@ -58,9 +70,19 @@ export default {
 
 <style scoped>
 
+h2 {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
 /* Add your styles here */
 .deck-card {
   margin-bottom: 20px;
+}
+
+.button-arena,
+.button-pokemon-list {
+  margin-top: 20px;
 }
 
 </style>

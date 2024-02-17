@@ -4,7 +4,8 @@
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
       <h2>{{ selectedPokemon.name }}</h2>
-      <img :src="getImagePath(selectedPokemon.name)" :alt="selectedPokemon.name + ' Image'" />
+      <img :src="getImagePath(selectedPokemon.name)" :alt="selectedPokemon.name + ' Image'" @error="handleImageError"/>
+      <p>Japanese name: {{selectedPokemon.japanese_name}}</p>
       <p>Classification: {{ selectedPokemon.classfication }}</p>
       <p>Type: {{ selectedPokemon.type1 }}{{ selectedPokemon.type2 ? ' / ' + selectedPokemon.type2 : '' }}</p>
       <p>Abilities: {{ selectedPokemon.abilities }}</p>
@@ -15,12 +16,12 @@
       <p>Defense: {{selectedPokemon.defense}}</p>
       <p>SP Defense: {{selectedPokemon.sp_defense}}</p>
       <p>Speed: {{selectedPokemon.speed}}</p>
-    </div>
 
-    <!-- Add to Deck and Remove from Deck buttons -->
-    <div class="deck-actions">
-      <button @click="addToDeck" :disabled="isInDeck || isDeckFull">Add to My Deck</button>
-      <button @click="removeFromDeck" :disabled="!isInDeck">Remove from My Deck</button>
+      <!-- Add to Deck and Remove from Deck buttons -->
+      <div class="deck-actions">
+        <button @click="addToDeck" :disabled="isInDeck || isDeckFull">Add to My Deck</button>
+        <button @click="removeFromDeck" :disabled="!isInDeck">Remove from My Deck</button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +48,11 @@ export default {
     getImagePath(pokemonName) {
       // Assuming your images are stored in the 'public/images/' folder
       return 'images/' + pokemonName.toLowerCase() + '.png';
+    },
+    handleImageError(event) {
+      // Function to handle image loading errors (e.g., image not found)
+      event.target.src = 'placeholders/placeholder01.png';
+      event.target.alt = 'Image not found';
     },
     closeModal() {
       console.log('Closing modal');
@@ -81,11 +87,11 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.7);
+  /*background-color: var(--color-background-soft);*/
 }
 
 .modal-content {
-  background-color: #fefefe;
+  background-color: var(--color-background);
   margin: 10% auto;
   padding: 20px;
   border: 1px solid #888;

@@ -1,23 +1,32 @@
 <!-- PokemonCardList.vue -->
 <template>
   <div>
+    <div>
+      <img src="@/assets/logo_pokemon.png" alt="Logo-pokemon" class="logo"/>
+    </div>
     <h2>Pokémon List</h2>
     <div class="filters">
-      <label>
-        Name:
-        <input v-model="nameFilter" @input="applyFilters" />
-      </label>
-      <label>
-        Classification:
-        <input v-model="classificationFilter" @input="applyFilters" />
-      </label>
-      <label>
-        Type:
-        <select v-model="typeFilter" @change="applyFilters">
-          <option value="">All</option>
-          <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
-        </select>
-      </label>
+      <div class="filter-group">
+        <label class="filter filer-name">
+          Name:
+          <input v-model="nameFilter" @input="applyFilters" />
+        </label>
+      </div>
+      <div class="filter-group">
+        <label class="filter filter-classification">
+          Classification:
+          <input v-model="classificationFilter" @input="applyFilters" />
+        </label>
+      </div>
+      <div class="filter-group">
+        <label class="filter filter-type">
+          Type:
+          <select v-model="typeFilter" @change="applyFilters">
+            <option value="">All</option>
+            <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
+          </select>
+        </label>
+      </div>
     </div>
     <div class="card-container">
       <div v-for="pokemon in filteredPokemons" :key="pokemon.pokedex_number" class="card">
@@ -35,15 +44,17 @@
     <pokemon-details-modal v-if="isModalVisible" :selected-pokemon="selectedPokemon" :deck-pokemons="selectedPokemons" @close="closeDetailsModal" @add-to-deck="addToDeck" @remove-from-deck="removeFromDeck"></pokemon-details-modal>
 
     <!-- Button to navigate to My Deck -->
-    <router-link to="/my-deck">
-      <button>Go to My Deck</button>
-    </router-link>
+    <div class="button-deck">
+      <router-link to="/my-deck">
+        <button>Go to My Deck</button>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import PokemonCard from './PokemonCard.vue';
-import data from '../../assets/data/pokemon.json';
 import PokemonDetailsModal from "./PokemonDetailsModal.vue";
 
 
@@ -54,7 +65,6 @@ export default {
   },
   data() {
     return {
-      pokemons: data, // Replace with your data
       itemsPerPage: 6,
       currentPage: 1,
       nameFilter: '',
@@ -66,6 +76,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['pokemons']),
     totalPages() {
       return Math.ceil(this.pokemons.length / this.itemsPerPage);
     },
@@ -145,8 +156,29 @@ export default {
 </script>
 
 <style scoped>
+img.logo {
+  display: block;
+  width: 30%;
+  margin: 20px auto;
+}
+
 .filters {
-  margin-bottom: 20px;
+  margin: 20px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.filter {
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .card-container {
@@ -171,5 +203,9 @@ export default {
   .card {
     flex: 0 0 calc(100% - 10px);
   }
+}
+
+.button-deck {
+  margin: 30px 20px;
 }
 </style>

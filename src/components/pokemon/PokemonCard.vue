@@ -2,7 +2,7 @@
 <template>
   <div class="card" @click="openDetailsModal">
     <h2>{{ pokemon.name }}</h2>
-    <img :src="getImagePath(pokemon.name)" :alt="pokemon.name + ' Image'" />
+    <img :src="getImagePath(pokemon.name)" :alt="pokemon.name + ' Image'" @error="handleImageError" />
     <p>Classification: {{ pokemon.classfication }}</p>
     <p>Type: {{ pokemon.type1 }}{{ pokemon.type2 ? ' / ' + pokemon.type2 : '' }}</p>
     <!-- Add more properties as needed -->
@@ -18,6 +18,11 @@ export default {
     getImagePath(pokemonName) {
       // Assuming your images are stored in the 'public/images/' folder
       return 'images/' + pokemonName.toLowerCase() + '.png';
+    },
+    handleImageError(event) {
+      // Function to handle image loading errors (e.g., image not found)
+      event.target.src = 'placeholders/placeholder01.png';
+      event.target.alt = 'Image not found';
     },
     openDetailsModal() {
       console.log("openDetailsModal");
